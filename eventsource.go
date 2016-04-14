@@ -78,6 +78,8 @@ func (es *Eventsource) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	res.Header().Set("Transfer-Encoding", "chunked")
+
 	options := es.HttpOptions.Bytes(req)
 	_, err = conn.Write(options)
 	if err != nil {
