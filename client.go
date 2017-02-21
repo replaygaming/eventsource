@@ -26,7 +26,7 @@ type payload struct {
 // them to its underlining connection. If there is an error, the client send a
 // message to remove itself from the pool through the remove channel passed in
 // and notifies pending events by closing the done channel.
-func (c *client) listen(remove chan<- client) {
+func (c *client) listen(remove chan<- client, errors chan<- error) {
 	for {
 		e, ok := <-c.events
 		if !ok {
@@ -43,6 +43,7 @@ func (c *client) listen(remove chan<- client) {
 				e.done <- time.Since(start)
 			} else {
 				e.done <- 0
+				errors <- err
 			}
 		}
 

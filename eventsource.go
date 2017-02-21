@@ -50,6 +50,7 @@ func (es *Eventsource) Start() {
 		add:      make(chan client),
 		remove:   make(chan client),
 		events:   make(chan Event),
+		errors:   make(chan error),
 		hearbeat: 30 * time.Second,
 		metrics:  es.Metrics,
 	}
@@ -60,6 +61,10 @@ func (es *Eventsource) Start() {
 // Send forwards an event to clients
 func (es *Eventsource) Send(event Event) {
 	es.events <- event
+}
+
+func (es *Eventsource) Errors() chan error {
+	return es.errors
 }
 
 // ServeHTTP implements the http handle interface.
