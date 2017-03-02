@@ -8,6 +8,7 @@ type server struct {
 	add      chan client
 	remove   chan client
 	events   chan Event
+	errors   chan error
 	hearbeat time.Duration
 	metrics  Metrics
 }
@@ -74,7 +75,7 @@ func send(e Event, clients []client) []time.Duration {
 // the client to listen to incoming messages. The client receives the remove
 // channel necessary to unsubscribe itself from the server.
 func (s server) spawn(clients []client, c client) []client {
-	go c.listen(s.remove)
+	go c.listen(s.remove, s.errors)
 	clients = append(clients, c)
 	return clients
 }
